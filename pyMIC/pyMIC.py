@@ -28,11 +28,11 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
     cutoff should be less than the number of remaining genes after the list of TFs are extracted.
     """
 
-    tf_list = os.popen("cat "+tf_list_file+" | cut -d '\t' -f1").read().split('\n')
+    tf_list = os.popen("cat "+tf_list_file+" | cut -d '\t' -f1").read().split('\n')[:-1]
     if(gene_exp_file.split(".")[1] == "txt"):
-        gene_list = os.popen("cat "+gene_exp_file+" | cut -d '\t' -f1").read().split('\n')
+        gene_list = os.popen("cat "+gene_exp_file+" | cut -d '\t' -f1").read().split('\n')[:-1]
     elif(gene_exp_file.split(".")[1] == "csv"):
-        gene_list = os.popen("cat "+gene_exp_file+" | cut -d ',' -f1").read().split('\n')
+        gene_list = os.popen("cat "+gene_exp_file+" | cut -d ',' -f1").read().split('\n')[:-1]
     else:
         print("File type error")
         sys.exit(0)
