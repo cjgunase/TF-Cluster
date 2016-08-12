@@ -68,10 +68,5 @@ AAM    2.98     3.45   5.33   3.22
 
 2.3 The detailed TFgenes connectivity in each cluster is included in the cluster_within_connectivity directory. The format is TFgene1   TFgene2  connectivity(number of top 100 gene shared). This file can be used as input to Cytoscape or other tools to generate the connectivity graph.
 
-######### help info #############
-
-For help contact Jeff Nie at jnie@morgridgeinstitute.org or 
-
-                 Hairong Wei at hairong@mtu.edu
 
 
