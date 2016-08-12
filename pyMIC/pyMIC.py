@@ -5,6 +5,9 @@ from joblib import Parallel, delayed
 import multiprocessing
 
 def processInput(i,gene_exp_file,cutoff=100):
+    """
+    This function is called by the some_vs_rest() function. Each processor runs this function in parellel for each of the TF
+    """
     #carefull about cutoff this could cause a bug
     #command = "java -jar MINE.jar "+gene_exp_file+" "+str(i)+" notify=500 >/dev/null"
     command = "java -jar MINE.jar "+gene_exp_file+" "+str(i)  
@@ -18,6 +21,13 @@ def processInput(i,gene_exp_file,cutoff=100):
 
 def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
 
+    """
+    some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100) -> list of lists, each element array corresponds to the top (cutoff) genes associated 
+    with the TFs in the retured list.
+    The input files are the expression file and the ID list of TFs in the expression file. This function works in parellel and ncores can be specified.
+    cutoff should be less than the number of remaining genes after the list of TFs are extracted.
+    """
+
     tf_list = os.popen("cat "+tf_list_file+" | cut -d '\t' -f1").read().split('\n')
     if(gene_exp_file.split(".")[1] == "txt"):
         gene_list = os.popen("cat "+gene_exp_file+" | cut -d '\t' -f1").read().split('\n')
@@ -27,7 +37,6 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
         print("File type error")
         sys.exit(0)
 
-
     valid_TF = []
     TF_index = []
     for tf in tf_list:
@@ -36,8 +45,6 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
             valid_TF.append(tf)
         except ValueError:
             pass
-
-
 
     inputs = TF_index # Test with only 10 TFs
     valid_TF = valid_TF
@@ -51,7 +58,9 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
 
 if __name__=='__main__':
 
-    #file names
+    """
+    Test case to analylse and build a Shared Co-expression Connectivity Matrix using the pairwise associations.
+    """
     tf_list_file = "test_gene_list.txt"
     gene_exp_file = "Spellman.csv"
     rf = open("TF_genes.csv", "w")
