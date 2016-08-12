@@ -63,7 +63,7 @@ if __name__=='__main__':
     """
     tf_list_file = "test_gene_list.txt"
     gene_exp_file = "Spellman.csv"
-    rf = open("TF_genes.csv", "w")
+    rf = open("TF_genes.txt", "w")
 
     results,valid_TF = some_vs_rest(tf_list_file,gene_exp_file,4,100)
 
