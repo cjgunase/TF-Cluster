@@ -4,7 +4,7 @@ import sys
 from joblib import Parallel, delayed
 import multiprocessing
 
-def processInput(i,gene_exp_file,cutoff=100):
+def processInput(i,gene_exp_file,cutoff):
     """
     This function is called by the some_vs_rest() function. Each processor runs this function in parellel for each of the TF
     """
@@ -14,7 +14,7 @@ def processInput(i,gene_exp_file,cutoff=100):
     os.system(command)
     os.system("rm "+gene_exp_file+",mv="+str(i)+",cv=0.0,B=n^0.6,Status.txt")
     os.system("mv "+gene_exp_file+",mv="+str(i)+",cv=0.0,B=n^0.6,Results.csv mycsv"+str(i)+".csv")
-    top_genes = os.popen("cat mycsv"+str(i)+".csv | cut -d ',' -f2").read().split('\n')[1:cutoff] # get the top cutoff genes correlated with the TF
+    top_genes = os.popen("cat mycsv"+str(i)+".csv | cut -d ',' -f2").read().split('\n')[1:(cutoff+1)] # get the top cutoff genes correlated with the TF
     os.system("rm mycsv"+str(i)+".csv")
     return top_genes
 
