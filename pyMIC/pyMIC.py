@@ -28,14 +28,30 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
     cutoff should be less than the number of remaining genes after the list of TFs are extracted.
     """
 
-    tf_list = os.popen("cat "+tf_list_file+" | cut -d '\t' -f1").read().split('\n')[:-1]
+    os.system("sort -buk1,1 "+tf_list_file+" > "+"checked_"+tf_list_file)
+    os.system("mv checked_"+tf_list_file+" "+tf_list_file)
+
+    tf_list = os.popen("cat "+tf_list_file+" | cut -d '\t' -f1").read().split('\n')
+
+    print(tf_list)
+
     if(gene_exp_file.split(".")[1] == "txt"):
-        gene_list = os.popen("cat "+gene_exp_file+" | cut -d '\t' -f1").read().split('\n')[:-1]
+        print("here")
+
+        os.system("sort -buk1,1 "+gene_exp_file+" > "+"checked_"+gene_exp_file)
+        os.system("mv checked_"+gene_exp_file+" "+gene_exp_file)
+        gene_list = os.popen("cat "+gene_exp_file+" | cut -d '\t' -f1").read().split('\n')
+
     elif(gene_exp_file.split(".")[1] == "csv"):
-        gene_list = os.popen("cat "+gene_exp_file+" | cut -d ',' -f1").read().split('\n')[:-1]
+        print("Please submit tab delimited file in .txt format")
+        sys.exit(0)
+        #gene_list = os.popen("cat "+gene_exp_file+" | cut -d ',' -f1").read().split('\n')[:-1]
     else:
         print("File type error")
         sys.exit(0)
+
+
+    print(gene_list)
 
     valid_TF = []
     TF_index = []
@@ -48,7 +64,8 @@ def some_vs_rest(tf_list_file,gene_exp_file,ncores=4,cutoff=100):
 
     inputs = TF_index # Test with only 10 TFs
     valid_TF = valid_TF
-    print(str(len(valid_TF))+" number of TFs will be compared with"+str(len(gene_list))+" number of genes for assiciations")
+
+    print(str(len(valid_TF))+" number of TFs will be compared with "+str(len(gene_list))+" number of genes for associations")
 
     num_cores = ncores #multiprocessing.cpu_count()     
     results = Parallel(n_jobs=num_cores)(delayed(processInput)(i,gene_exp_file,cutoff) for i in inputs)
@@ -62,11 +79,13 @@ if __name__=='__main__':
     Test case to analylse and build a Shared Co-expression Connectivity Matrix using the pairwise associations.
     """
     tf_list_file = "test_gene_list.txt"
-    gene_exp_file = "Spellman.csv"
-    rf = open("TF_genes.txt", "w")
-
+    gene_exp_file = "Spellman.txt"
+    
     results,valid_TF = some_vs_rest(tf_list_file,gene_exp_file,4,100)
 
+
+
+    rf = open(os.path.basename(tf_list_file)+"_"+os.path.basename(gene_exp_file)+"_coexp.matrix.txt", "w")
     for i in range(len(valid_TF)):
         rf.write(valid_TF[i])
         for j in range(len(valid_TF)):
